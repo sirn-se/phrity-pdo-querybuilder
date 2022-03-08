@@ -19,7 +19,7 @@ class Builder
     /* ---------- Formatting methods ------------------------------------------------- */
 
     /**
-     * Database dependent quote method
+     * Quote method, database dependent
      */
     public function quote(string $string, int $type = PDO::PARAM_STR)
     {
@@ -61,5 +61,30 @@ class Builder
     public function e(string $string): string
     {
         return $this->escape ? "`{$string}`" : $string;
+    }
+
+
+    /* ---------- Generator methods -------------------------------------------------- */
+
+    public function table(string $name, string $alias = null): Table
+    {
+        return new Table($this, $name, $alias);
+    }
+
+    public function field(Table $table, string $name, string $alias = null): Field
+    {
+        return new Field($this, $table, $name, $alias);
+    }
+
+    public function value($value): Value
+    {
+        return new Value($this, $value);
+    }
+
+    /* ---------- Query methods ------------------------------------------------------ */
+
+    public function select(SqlInterface ...$references): Select
+    {
+        return new Select($this, ...$references);
     }
 }

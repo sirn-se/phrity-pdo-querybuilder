@@ -9,6 +9,8 @@ use PDO;
 
 class FormattingTest extends TestCase
 {
+    use PdoTrait;
+
     public function setUp(): void
     {
         error_reporting(-1);
@@ -35,6 +37,7 @@ class FormattingTest extends TestCase
         $this->assertSame('NULL', $b->q(null));
         $this->assertSame("'1234'", $b->q('1234'));
         $this->assertSame(1234, $b->q('1234', 'integer'));
+        $this->assertSame("'1234'", $b->q(1234, 'string'));
     }
 
     public function testEscape(): void
@@ -49,10 +52,5 @@ class FormattingTest extends TestCase
     {
         $b = new Builder($this->getPdo());
         $this->assertSame('My string', $b->e('My string'));
-    }
-
-    private function getPdo(): PDO
-    {
-        return new Pdo('sqlite:sqlite.temp');
     }
 }
