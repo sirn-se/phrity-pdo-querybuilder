@@ -40,11 +40,17 @@ class SelectTest extends TestCase
         $s = new Select($b, $t);
         $this->assertSame("SELECT * FROM `table_name` AS `table_alias`;", "{$s}");
         $s = new Select($b, $t, $f, $v);
-        $this->assertSame("SELECT `table_alias`.`field_name` AS `field_alias`,'my string' FROM `table_name` AS `table_alias`;", "{$s}");
+        $this->assertSame(
+            "SELECT `table_alias`.`field_name` AS `field_alias`,'my string' FROM `table_name` AS `table_alias`;",
+            "{$s}"
+        );
         $s = new Select($b, $v);
         $this->assertSame("SELECT 'my string';", "{$s}");
         $s = $b->select($t, $f, $v);
-        $this->assertSame("SELECT `table_alias`.`field_name` AS `field_alias`,'my string' FROM `table_name` AS `table_alias`;", "{$s}");
+        $this->assertSame(
+            "SELECT `table_alias`.`field_name` AS `field_alias`,'my string' FROM `table_name` AS `table_alias`;",
+            "{$s}"
+        );
     }
 
     public function testRuntime(): void
