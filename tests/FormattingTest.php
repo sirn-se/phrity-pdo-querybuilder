@@ -18,7 +18,7 @@ class FormattingTest extends TestCase
     {
         $b = new Builder($this->getPdo());
         $this->assertSame("'My string'", $b->quote('My string'));
-        $this->assertSame("'My \'string'", $b->quote("My 'string"));
+        $this->assertSame("'My ''string'", $b->quote("My 'string"));
         $this->assertSame("'My string'", $b->quote('My string', PDO::PARAM_STR));
         $this->assertSame("'123'", $b->quote('123'));
         $this->assertSame("'123'", $b->quote('123', PDO::PARAM_INT));
@@ -53,6 +53,6 @@ class FormattingTest extends TestCase
 
     private function getPdo(): PDO
     {
-        return new Pdo('sqlite');
+        return new Pdo('sqlite:sqlite.temp');
     }
 }
