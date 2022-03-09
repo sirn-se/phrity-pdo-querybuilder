@@ -2,6 +2,6 @@
 
 namespace Phrity\Pdo\Query;
 
-interface SqlInterface
+interface ReferableInterface
 {
 }

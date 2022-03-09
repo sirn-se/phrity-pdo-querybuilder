@@ -81,10 +81,31 @@ class Builder
         return new Value($this, $value);
     }
 
+
     /* ---------- Query methods ------------------------------------------------------ */
 
     public function select(SqlInterface ...$references): Select
     {
         return new Select($this, ...$references);
     }
+
+    public function innerJoin(Table $table, Table $join): InnerJoin
+    {
+        return new InnerJoin($this, $table, $join);
+    }
+
+
+
+    /* ---------- Condition methods -------------------------------------------------- */
+
+    public function and(SqlInterface ...$contitions): AndCondition
+    {
+        return new AndCondition(...$contitions);
+    }
+
+    public function eq(SqlInterface $left, SqlInterface $right): Eq
+    {
+        return new Eq($left, $right);
+    }
+
 }

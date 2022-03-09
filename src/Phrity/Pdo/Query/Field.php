@@ -17,16 +17,16 @@ class Field implements SqlInterface
         $this->alias = $alias;
     }
 
-    public function __toString(): string
+    public function define(): string
     {
-        $ref = $this->table->ref();
+        $ref = $this->table->refer();
         return $this->alias
-            ? "{$this->b->e($ref)}.{$this->b->e($this->name)} AS {$this->b->e($this->alias)}"
-            : "{$this->b->e($ref)}.{$this->b->e($this->name)}";
+            ? "{$ref}.{$this->b->e($this->name)} {$this->b->e($this->alias)}"
+            : "{$ref}.{$this->b->e($this->name)}";
     }
 
-    public function ref(): string
+    public function refer(): string
     {
-        return $this->alias ? $this->alias : $this->name;
+        return "{$this->table->refer()}.{$this->b->e($this->name)}";
     }
 }

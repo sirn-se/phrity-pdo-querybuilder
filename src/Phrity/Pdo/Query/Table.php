@@ -2,7 +2,7 @@
 
 namespace Phrity\Pdo\Query;
 
-class Table implements SqlInterface
+class Table
 {
     private $b;
     private $name;
@@ -15,15 +15,23 @@ class Table implements SqlInterface
         $this->alias = $alias;
     }
 
-    public function __toString(): string
+    public function define(): string
     {
         return $this->alias
-            ? "{$this->b->e($this->name)} AS {$this->b->e($this->alias)}"
+            ? "{$this->b->e($this->name)} {$this->b->e($this->alias)}"
             : "{$this->b->e($this->name)}";
     }
 
-    public function ref(): string
+    public function refer(): string
     {
-        return $this->alias ? $this->alias : $this->name;
+        return $this->b->e($this->alias ?: $this->name);
+    }
+
+
+    /* ---------- Builder methods ---------------------------------------------------- */
+
+    public function field(string $name, string $alias = null): Field
+    {
+        return new Field($this->b, $this, $name, $alias);
     }
 }
