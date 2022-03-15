@@ -99,6 +99,11 @@ class Builder
         return new InnerJoin($this, $join);
     }
 
+    public function leftJoin(Table $join): LeftJoin
+    {
+        return new LeftJoin($this, $join);
+    }
+
     public function assign(ExpressionInterface $target, ExpressionInterface $source): Assign
     {
         return new Assign($this, $target, $source);

@@ -9,6 +9,7 @@ class Select implements StatementInterface
     private $select = [];
     private $where;
     private $joins = [];
+    private $order_by = [];
     private $for;
 
     public function __construct(Builder $b, Table $from = null, ExpressionInterface ...$select)
@@ -46,6 +47,18 @@ class Select implements StatementInterface
         return $join;
     }
 
+    public function leftJoin(Table $join): LeftJoin
+    {
+        $join = $this->b->leftJoin($join);
+        $this->joins[] = $join;
+        return $join;
+    }
+
+    public function orderBy(ExpressionInterface ...$order): void
+    {
+        $this->order_by = $order;
+    }
+
     public function forUpdate(): void
     {
         $this->for = 'UPDATE';
@@ -64,7 +77,10 @@ class Select implements StatementInterface
             return $join->sql();
         }, $this->joins)) : '';
         $where = $this->where ? " WHERE {$this->where->define()}" : '';
+        $order_by = $this->order_by ? ' ORDER BY ' . implode(',', array_map(function ($order_by) {
+            return $order_by->define();
+        }, $this->order_by)) : '';
         $for = $this->for ? " FOR {$this->for}" : '';
-        return "SELECT {$fields}{$from}{$joins}{$where}{$for};";
+        return "SELECT {$fields}{$from}{$joins}{$where}{$order_by}{$for};";
     }
 }

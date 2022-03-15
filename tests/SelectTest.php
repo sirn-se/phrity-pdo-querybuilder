@@ -49,20 +49,42 @@ class SelectTest extends TestCase
             $select->sql()
         );
 
-        $join = $select->innerJoin($join_table = $b->table('join_name'));
-        $join->on($b->eq($join_table->field('field_name'), $table->field('field_name')));
+        $inner = $select->innerJoin($b->table('inner_table'));
+        $inner->on($b->eq($inner->field('inner_field'), $table->field('field_name')));
         $this->assertSame(
             'SELECT table_name.field_name FROM table_name '
-            . 'INNER JOIN join_name ON (join_name.field_name=table_name.field_name) '
+            . 'INNER JOIN inner_table ON (inner_table.inner_field=table_name.field_name) '
             . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW()));',
+            $select->sql()
+        );
+
+        $left = $select->leftJoin($b->table('left_table'));
+        $left->on($b->eq($left->field('left_field'), $table->field('field_name')));
+        $this->assertSame(
+            'SELECT table_name.field_name FROM table_name '
+            . 'INNER JOIN inner_table ON (inner_table.inner_field=table_name.field_name) '
+            . 'LEFT JOIN left_table ON (left_table.left_field=table_name.field_name) '
+            . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW()));',
+            $select->sql()
+        );
+
+        $select->orderBy($left->field('left_field'), $b->eq($inner->field('inner_field'), $table->field('field_name')));
+        $this->assertSame(
+            'SELECT table_name.field_name FROM table_name '
+            . 'INNER JOIN inner_table ON (inner_table.inner_field=table_name.field_name) '
+            . 'LEFT JOIN left_table ON (left_table.left_field=table_name.field_name) '
+            . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW())) '
+            . 'ORDER BY left_table.left_field,(inner_table.inner_field=table_name.field_name);',
             $select->sql()
         );
 
         $select->forUpdate();
         $this->assertSame(
             'SELECT table_name.field_name FROM table_name '
-            . 'INNER JOIN join_name ON (join_name.field_name=table_name.field_name) '
+            . 'INNER JOIN inner_table ON (inner_table.inner_field=table_name.field_name) '
+            . 'LEFT JOIN left_table ON (left_table.left_field=table_name.field_name) '
             . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW())) '
+            . 'ORDER BY left_table.left_field,(inner_table.inner_field=table_name.field_name) '
             . 'FOR UPDATE;',
             $select->sql()
         );
