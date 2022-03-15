@@ -5,32 +5,35 @@ namespace Phrity\Pdo\Query;
 class InnerJoin
 {
     private $b;
-    private $name;
+    private $from;
     private $join;
-    private $condition;
+    private $on;
 
-    public function __construct(Builder $b, Table $table, Table $join)
+    public function __construct(Builder $b, Table $join)
     {
         $this->b = $b;
-        $this->table = $table;
         $this->join = $join;
     }
 
-    public function sql(): string
-    {
-        $condition = $this->condition ? " ON {$this->condition->define()}" : '';
-        return "INNER JOIN {$this->join->define()}{$condition}";
-    }
-
-    public function setCondition(SqlInterface $condition): void
-    {
-        $this->condition = $condition;
-    }
 
     /* ---------- Builder methods ---------------------------------------------------- */
 
     public function field(string $name, string $alias = null): Field
     {
-        return new Field($this->b, $this, $name, $alias);
+        return new Field($this->b, $this->join, $name, $alias);
+    }
+
+    public function on(ExpressionInterface $on): void
+    {
+        $this->on = $on;
+    }
+
+
+    /* ---------- Generator methods -------------------------------------------------- */
+
+    public function sql(): string
+    {
+        $on = $this->on ? " ON {$this->on->define()}" : '';
+        return "INNER JOIN {$this->join->define()}{$on}";
     }
 }

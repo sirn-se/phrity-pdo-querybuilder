@@ -2,7 +2,7 @@
 
 namespace Phrity\Pdo\Query;
 
-class Field implements SqlInterface
+class Field implements ExpressionInterface
 {
     private $b;
     private $table;
@@ -17,12 +17,14 @@ class Field implements SqlInterface
         $this->alias = $alias;
     }
 
+
+    /* ---------- Generator methods -------------------------------------------------- */
+
     public function define(): string
     {
-        $ref = $this->table->refer();
         return $this->alias
-            ? "{$ref}.{$this->b->e($this->name)} {$this->b->e($this->alias)}"
-            : "{$ref}.{$this->b->e($this->name)}";
+            ? "{$this->refer()} {$this->b->e($this->alias)}"
+            : $this->refer();
     }
 
     public function refer(): string

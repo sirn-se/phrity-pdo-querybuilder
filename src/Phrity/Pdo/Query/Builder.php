@@ -76,36 +76,62 @@ class Builder
         return new Field($this, $table, $name, $alias);
     }
 
-    public function value($value): Value
+    public function value($value, string $alias = null): Value
     {
-        return new Value($this, $value);
+        return new Value($this, $value, $alias);
     }
 
 
     /* ---------- Query methods ------------------------------------------------------ */
 
-    public function select(SqlInterface ...$references): Select
+    public function select(Table $table = null, ExpressionInterface ...$select): Select
     {
-        return new Select($this, ...$references);
+        return new Select($this, $table, ...$select);
     }
 
-    public function innerJoin(Table $table, Table $join): InnerJoin
+    public function update(Table $table = null, Assign ...$assign): Update
     {
-        return new InnerJoin($this, $table, $join);
+        return new Update($this, $table, ...$assign);
     }
 
+    public function innerJoin(Table $join): InnerJoin
+    {
+        return new InnerJoin($this, $join);
+    }
+
+    public function assign(ExpressionInterface $target, ExpressionInterface $source): Assign
+    {
+        return new Assign($this, $target, $source);
+    }
 
 
     /* ---------- Condition methods -------------------------------------------------- */
 
-    public function and(SqlInterface ...$contitions): AndCondition
+    public function and(ExpressionInterface ...$contitions): AndExpression
     {
-        return new AndCondition(...$contitions);
+        return new AndExpression($this, ...$contitions);
     }
 
-    public function eq(SqlInterface $left, SqlInterface $right): Eq
+    public function eq(ExpressionInterface $left, ExpressionInterface $right): EqExpression
     {
-        return new Eq($left, $right);
+        return new EqExpression($this, $left, $right);
     }
 
+    public function gte(ExpressionInterface $left, ExpressionInterface $right): GteExpression
+    {
+        return new GteExpression($this, $left, $right);
+    }
+
+
+    /* ---------- Function methods --------------------------------------------------- */
+
+    public function now(): NowFunction
+    {
+        return new NowFunction($this);
+    }
+
+    public function curDate(): CurDateFunction
+    {
+        return new CurDateFunction($this);
+    }
 }

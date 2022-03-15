@@ -8,6 +8,13 @@ class Table
     private $name;
     private $alias;
 
+    /**
+     * Create a Table instance
+     * @param Builder $b          Builder to use
+     * @param string $name        Name of table
+     * @param string|null $alias  Alias of table (optional)
+     * @return New Table instance
+     */
     public function __construct(Builder $b, string $name, string $alias = null)
     {
         $this->b = $b;
@@ -15,6 +22,27 @@ class Table
         $this->alias = $alias;
     }
 
+
+    /* ---------- Builder methods ---------------------------------------------------- */
+
+    /**
+     * Build field associated to this table
+     * @param string $name        Name of field
+     * @param string|null $alias  Alias of field (optional)
+     * @return New Field instance
+     */
+    public function field(string $name, string $alias = null): Field
+    {
+        return new Field($this->b, $this, $name, $alias);
+    }
+
+
+    /* ---------- Generator methods -------------------------------------------------- */
+
+    /**
+     * Return definition
+     * @return string Sql table definition
+     */
     public function define(): string
     {
         return $this->alias
@@ -22,16 +50,12 @@ class Table
             : "{$this->b->e($this->name)}";
     }
 
+    /**
+     * Return reference
+     * @return string Sql table reference
+     */
     public function refer(): string
     {
         return $this->b->e($this->alias ?: $this->name);
-    }
-
-
-    /* ---------- Builder methods ---------------------------------------------------- */
-
-    public function field(string $name, string $alias = null): Field
-    {
-        return new Field($this->b, $this, $name, $alias);
     }
 }

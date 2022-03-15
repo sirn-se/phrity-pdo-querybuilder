@@ -2,78 +2,69 @@
 
 namespace Phrity\Pdo\Query;
 
-class Select implements SqlInterface
+class Select implements StatementInterface
 {
     private $b;
     private $from;
-    private $selects = [];
-    private $condition;
+    private $select = [];
+    private $where;
     private $joins = [];
-    private $forupdate = false;
+    private $for;
 
-    public function __construct(Builder $b, SqlInterface ...$references)
+    public function __construct(Builder $b, Table $from = null, ExpressionInterface ...$select)
     {
         $this->b = $b;
-        foreach ($references as $reference) {
-            switch (get_class($reference)) {
-                case 'Phrity\Pdo\Query\Table':
-                    $this->setFrom($reference);
-                    break;
-                case 'Phrity\Pdo\Query\Field':
-                case 'Phrity\Pdo\Query\Value':
-                    $this->addSelect($reference);
-                    break;
-                case 'Phrity\Pdo\Query\AndCondition':
-                case 'Phrity\Pdo\Query\Eq':
-                    $this->setCondition($reference);
-                    break;
-            }
+        $this->from($from);
+        $this->select(...$select);
+    }
+
+
+    /* ---------- Builder methods ---------------------------------------------------- */
+
+    public function from(Table $from = null): ?Table
+    {
+        if ($from) {
+            $this->from = $from;
         }
+        return $from;
     }
 
-    public function setFrom(Table $table): void
+    public function select(ExpressionInterface ...$select): void
     {
-        $this->from = $table;
+        $this->select = $select;
     }
 
-    public function addSelect(SqlInterface $select): void
+    public function where(ExpressionInterface $where): void
     {
-        $this->selects[] = $select;
+        $this->where = $where;
     }
 
-    public function setCondition(SqlInterface $condition): void
+    public function innerJoin(Table $join): InnerJoin
     {
-        $this->condition = $condition;
-    }
-
-    public function addInnerJoin(Table $join): InnerJoin
-    {
-        $join = $this->b->innerJoin($this->from, $join);
+        $join = $this->b->innerJoin($join);
         $this->joins[] = $join;
         return $join;
     }
 
     public function forUpdate(): void
     {
-        $this->forupdate = true;
+        $this->for = 'UPDATE';
     }
+
+
+    /* ---------- Generator methods -------------------------------------------------- */
 
     public function sql(): string
     {
         $from = $this->from ? " FROM {$this->from->define()}" : '';
-        $fields = $this->selects ? implode(',', array_map(function ($select) {
+        $fields = $this->select ? implode(',', array_map(function ($select) {
             return $select->define();
-        }, $this->selects)) : '*';
-        $joins = $this->joins ? implode(',', array_map(function ($join) {
+        }, $this->select)) : '*';
+        $joins = $this->joins ? ' ' . implode(' ', array_map(function ($join) {
             return $join->sql();
         }, $this->joins)) : '';
-        $condition = $this->condition ? " WHERE {$this->condition->define()}" : '';
-        $forupdate = $this->forupdate ? " FOR UPDATE" : '';
-        return "SELECT {$fields}{$from}{$joins}{$condition}{$forupdate};";
-    }
-
-    public function __toString(): string
-    {
-        return $this->sql();
+        $where = $this->where ? " WHERE {$this->where->define()}" : '';
+        $for = $this->for ? " FOR {$this->for}" : '';
+        return "SELECT {$fields}{$from}{$joins}{$where}{$for};";
     }
 }

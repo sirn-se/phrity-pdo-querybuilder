@@ -15,58 +15,56 @@ class SelectTest extends TestCase
         error_reporting(-1);
     }
 
-    public function testFrom(): void
+    public function testSelect(): void
     {
         $b = new Builder($this->getPdo());
-        $t = $b->table('table_name');
-        $f = $b->field($t, 'field_name');
-        $v = $b->value('my string');
-        $s = new Select($b, $t);
-        $this->assertSame("SELECT * FROM table_name;", "{$s}");
-        $s = new Select($b, $t, $f, $v);
-        $this->assertSame("SELECT table_name.field_name,'my string' FROM table_name;", "{$s}");
-        $s = new Select($b, $v);
-        $this->assertSame("SELECT 'my string';", "{$s}");
-        $s = $b->select($t, $f, $v);
-        $this->assertSame("SELECT table_name.field_name,'my string' FROM table_name;", "{$s}");
-    }
 
-    public function testFromAlias(): void
-    {
-        $b = new Builder($this->getPdo(), true);
-        $t = $b->table('table_name', 'table_alias');
-        $f = $b->field($t, 'field_name', 'field_alias');
-        $v = $b->value('my string');
-        $s = new Select($b, $t);
-        $this->assertSame("SELECT * FROM `table_name` AS `table_alias`;", "{$s}");
-        $s = new Select($b, $t, $f, $v);
-        $this->assertSame(
-            "SELECT `table_alias`.`field_name` AS `field_alias`,'my string' FROM `table_name` AS `table_alias`;",
-            "{$s}"
-        );
-        $s = new Select($b, $v);
-        $this->assertSame("SELECT 'my string';", "{$s}");
-        $s = $b->select($t, $f, $v);
-        $this->assertSame(
-            "SELECT `table_alias`.`field_name` AS `field_alias`,'my string' FROM `table_name` AS `table_alias`;",
-            "{$s}"
-        );
-    }
+        $select = $b->select();
+        $this->assertSame('SELECT *;', $select->sql());
 
-    public function testRuntime(): void
-    {
-        $b = new Builder($this->getPdo());
-        $s = new Select($b);
-        $t1 = $b->table('table_1');
-        $t2 = $b->table('table_2');
-        $this->assertSame("SELECT *;", "{$s}");
-        $s->addFrom($t1);
-        $this->assertSame("SELECT * FROM table_1;", "{$s}");
-        $s->addFrom($t2);
-        $this->assertSame("SELECT * FROM table_1,table_2;", "{$s}");
-        $s->addSelect($b->field($t1, 'field_1'));
-        $this->assertSame("SELECT table_1.field_1 FROM table_1,table_2;", "{$s}");
-        $s->addSelect($b->value('my value'));
-        $this->assertSame("SELECT table_1.field_1,'my value' FROM table_1,table_2;", "{$s}");
+        $select = $b->select($table = $b->table('table_name'));
+        $this->assertSame('SELECT * FROM table_name;', $select->sql());
+
+        $select = $b->select(null, $b->value(1234), $b->value('abc'));
+        $this->assertSame('SELECT 1234,\'abc\';', $select->sql());
+
+        $select = $b->select($table = $b->table('table_name'), $table->field('field_name'));
+        $this->assertSame('SELECT table_name.field_name FROM table_name;', $select->sql());
+
+        $select->where($b->and(
+            $b->eq($table->field('field_name'), $b->value(123))
+        ));
+        $this->assertSame(
+            'SELECT table_name.field_name FROM table_name WHERE ((table_name.field_name=123));',
+            $select->sql()
+        );
+
+        $select->where($b->and(
+            $b->eq($table->field('field_name'), $b->value(123)),
+            $b->eq($table->field('another_name'), $b->now()),
+        ));
+        $this->assertSame(
+            'SELECT table_name.field_name FROM table_name '
+            . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW()));',
+            $select->sql()
+        );
+
+        $join = $select->innerJoin($join_table = $b->table('join_name'));
+        $join->on($b->eq($join_table->field('field_name'), $table->field('field_name')));
+        $this->assertSame(
+            'SELECT table_name.field_name FROM table_name '
+            . 'INNER JOIN join_name ON (join_name.field_name=table_name.field_name) '
+            . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW()));',
+            $select->sql()
+        );
+
+        $select->forUpdate();
+        $this->assertSame(
+            'SELECT table_name.field_name FROM table_name '
+            . 'INNER JOIN join_name ON (join_name.field_name=table_name.field_name) '
+            . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW())) '
+            . 'FOR UPDATE;',
+            $select->sql()
+        );
     }
 }

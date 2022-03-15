@@ -2,10 +2,11 @@
 
 namespace Phrity\Pdo\Query;
 
-class Value implements SqlInterface
+class Value implements ExpressionInterface
 {
     private $b;
     private $value;
+    private $alias;
 
     public function __construct(Builder $b, $value, string $alias = null)
     {
@@ -14,11 +15,14 @@ class Value implements SqlInterface
         $this->alias = $alias;
     }
 
+
+    /* ---------- Generator methods -------------------------------------------------- */
+
     public function define(): string
     {
         return $this->alias
-            ? "{$this->b->q($this->value)} {$this->b->e($this->alias)}"
-            : "{$this->b->q($this->value)}";
+            ? "{$this->refer()} {$this->b->e($this->alias)}"
+            : $this->refer();
     }
 
     public function refer(): string
