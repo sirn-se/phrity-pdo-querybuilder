@@ -73,6 +73,22 @@ class QueryTest extends TestCase
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('table_name.field_name=\'my string\'', $assign->define());
+
+        $asc = $b->asc($field);
+        $this->assertInstanceOf('Phrity\Pdo\Query\AscSort', $asc);
+        $this->assertSame('table_name.field_name ASC', $asc->define());
+
+        $desc = $b->desc($eq_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\DescSort', $desc);
+        $this->assertSame('(table_name.field_name=\'my string\') DESC', $desc->define());
+
+        $limit = $b->limit(10);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 10', $limit->define());
+
+        $limit = $b->limit(10, 5);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 5,10', $limit->define());
     }
 
     public function testAlias(): void
@@ -133,6 +149,22 @@ class QueryTest extends TestCase
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('tn.field_name=\'my string\'', $assign->define());
+
+        $asc = $b->asc($field);
+        $this->assertInstanceOf('Phrity\Pdo\Query\AscSort', $asc);
+        $this->assertSame('tn.field_name ASC', $asc->define());
+
+        $desc = $b->desc($eq_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\DescSort', $desc);
+        $this->assertSame('(tn.field_name=\'my string\') DESC', $desc->define());
+
+        $limit = $b->limit(10);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 10', $limit->define());
+
+        $limit = $b->limit(10, 5);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 5,10', $limit->define());
     }
 
     public function testEscapedBasic(): void
@@ -193,6 +225,22 @@ class QueryTest extends TestCase
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('`table_name`.`field_name`=\'my string\'', $assign->define());
+
+        $asc = $b->asc($field);
+        $this->assertInstanceOf('Phrity\Pdo\Query\AscSort', $asc);
+        $this->assertSame('`table_name`.`field_name` ASC', $asc->define());
+
+        $desc = $b->desc($eq_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\DescSort', $desc);
+        $this->assertSame('(`table_name`.`field_name`=\'my string\') DESC', $desc->define());
+
+        $limit = $b->limit(10);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 10', $limit->define());
+
+        $limit = $b->limit(10, 5);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 5,10', $limit->define());
     }
 
     public function testEscapedAlias(): void
@@ -253,5 +301,21 @@ class QueryTest extends TestCase
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('`tn`.`field_name`=\'my string\'', $assign->define());
+
+        $asc = $b->asc($field);
+        $this->assertInstanceOf('Phrity\Pdo\Query\AscSort', $asc);
+        $this->assertSame('`tn`.`field_name` ASC', $asc->define());
+
+        $desc = $b->desc($eq_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\DescSort', $desc);
+        $this->assertSame('(`tn`.`field_name`=\'my string\') DESC', $desc->define());
+
+        $limit = $b->limit(10);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 10', $limit->define());
+
+        $limit = $b->limit(10, 5);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 5,10', $limit->define());
     }
 }

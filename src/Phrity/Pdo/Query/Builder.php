@@ -139,4 +139,22 @@ class Builder
     {
         return new CurDateFunction($this);
     }
+
+
+    /* ---------- Sort & limit methods ----------------------------------------------- */
+
+    public function asc(ExpressionInterface $expression): AscSort
+    {
+        return new AscSort($this, $expression);
+    }
+
+    public function desc(ExpressionInterface $expression): DescSort
+    {
+        return new DescSort($this, $expression);
+    }
+
+    public function limit(int $limit = null, int $offset = null): Limit
+    {
+        return new Limit($this, $limit, $offset);
+    }
 }

@@ -68,13 +68,26 @@ class SelectTest extends TestCase
             $select->sql()
         );
 
-        $select->orderBy($left->field('left_field'), $b->eq($inner->field('inner_field'), $table->field('field_name')));
+        $select->orderBy(
+            $b->asc($b->eq($inner->field('inner_field'), $table->field('field_name'))),
+            $b->desc($inner->field('inner_field'))
+        );
         $this->assertSame(
             'SELECT table_name.field_name FROM table_name '
             . 'INNER JOIN inner_table ON (inner_table.inner_field=table_name.field_name) '
             . 'LEFT JOIN left_table ON (left_table.left_field=table_name.field_name) '
             . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW())) '
-            . 'ORDER BY left_table.left_field,(inner_table.inner_field=table_name.field_name);',
+            . 'ORDER BY (inner_table.inner_field=table_name.field_name) ASC,inner_table.inner_field DESC;',
+            $select->sql()
+        );
+        $select->limit(10, 100);
+        $this->assertSame(
+            'SELECT table_name.field_name FROM table_name '
+            . 'INNER JOIN inner_table ON (inner_table.inner_field=table_name.field_name) '
+            . 'LEFT JOIN left_table ON (left_table.left_field=table_name.field_name) '
+            . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW())) '
+            . 'ORDER BY (inner_table.inner_field=table_name.field_name) ASC,inner_table.inner_field DESC '
+            . 'LIMIT 100,10;',
             $select->sql()
         );
 
@@ -84,7 +97,8 @@ class SelectTest extends TestCase
             . 'INNER JOIN inner_table ON (inner_table.inner_field=table_name.field_name) '
             . 'LEFT JOIN left_table ON (left_table.left_field=table_name.field_name) '
             . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW())) '
-            . 'ORDER BY left_table.left_field,(inner_table.inner_field=table_name.field_name) '
+            . 'ORDER BY (inner_table.inner_field=table_name.field_name) ASC,inner_table.inner_field DESC '
+            . 'LIMIT 100,10 '
             . 'FOR UPDATE;',
             $select->sql()
         );

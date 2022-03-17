@@ -9,8 +9,9 @@ class Select implements StatementInterface
     private $select = [];
     private $where;
     private $joins = [];
-    private $order_by = [];
+    private $order_by;
     private $for;
+    private $limit;
 
     public function __construct(Builder $b, Table $from = null, ExpressionInterface ...$select)
     {
@@ -54,9 +55,14 @@ class Select implements StatementInterface
         return $join;
     }
 
-    public function orderBy(ExpressionInterface ...$order): void
+    public function orderBy(ExpressionInterface ...$order_by): void
     {
-        $this->order_by = $order;
+        $this->order_by = $order_by;
+    }
+
+    public function limit(int $limit = null, int $offset = null): void
+    {
+        $this->limit = $this->b->limit($limit, $offset);
     }
 
     public function forUpdate(): void
@@ -80,7 +86,8 @@ class Select implements StatementInterface
         $order_by = $this->order_by ? ' ORDER BY ' . implode(',', array_map(function ($order_by) {
             return $order_by->define();
         }, $this->order_by)) : '';
+        $limit = $this->limit ? " {$this->limit->define()}" : '';
         $for = $this->for ? " FOR {$this->for}" : '';
-        return "SELECT {$fields}{$from}{$joins}{$where}{$order_by}{$for};";
+        return "SELECT {$fields}{$from}{$joins}{$where}{$order_by}{$limit}{$for};";
     }
 }
