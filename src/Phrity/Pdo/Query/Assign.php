@@ -18,6 +18,16 @@ class Assign
 
     /* ---------- Generator methods -------------------------------------------------- */
 
+    public function target(): string
+    {
+        return "{$this->target->refer()}";
+    }
+
+    public function source(): string
+    {
+        return "{$this->source->refer()}";
+    }
+
     public function define(): string
     {
         return "{$this->target->refer()}={$this->source->refer()}";

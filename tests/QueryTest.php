@@ -44,10 +44,25 @@ class QueryTest extends TestCase
         $this->assertSame('(table_name.field_name=\'my string\')', $eq_cond->define());
         $this->assertSame('(table_name.field_name=\'my string\')', $eq_cond->refer());
 
+        $gt_cond = $b->gt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\GtExpression', $gt_cond);
+        $this->assertSame('(table_name.field_name>1234)', $gt_cond->define());
+        $this->assertSame('(table_name.field_name>1234)', $gt_cond->refer());
+
         $gte_cond = $b->gte($field, $int_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\GteExpression', $gte_cond);
         $this->assertSame('(table_name.field_name>=1234)', $gte_cond->define());
         $this->assertSame('(table_name.field_name>=1234)', $gte_cond->refer());
+
+        $lt_cond = $b->lt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LtExpression', $lt_cond);
+        $this->assertSame('(table_name.field_name<1234)', $lt_cond->define());
+        $this->assertSame('(table_name.field_name<1234)', $lt_cond->refer());
+
+        $lte_cond = $b->lte($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LteExpression', $lte_cond);
+        $this->assertSame('(table_name.field_name<=1234)', $lte_cond->define());
+        $this->assertSame('(table_name.field_name<=1234)', $lte_cond->refer());
 
         $now_func = $b->now();
         $this->assertInstanceOf('Phrity\Pdo\Query\NowFunction', $now_func);
@@ -120,10 +135,25 @@ class QueryTest extends TestCase
         $this->assertSame('(tn.field_name=\'my string\')', $eq_cond->define());
         $this->assertSame('(tn.field_name=\'my string\')', $eq_cond->refer());
 
+        $gt_cond = $b->gt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\GtExpression', $gt_cond);
+        $this->assertSame('(tn.field_name>1234)', $gt_cond->define());
+        $this->assertSame('(tn.field_name>1234)', $gt_cond->refer());
+
         $gte_cond = $b->gte($field, $int_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\GteExpression', $gte_cond);
         $this->assertSame('(tn.field_name>=1234)', $gte_cond->define());
         $this->assertSame('(tn.field_name>=1234)', $gte_cond->refer());
+
+        $lt_cond = $b->lt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LtExpression', $lt_cond);
+        $this->assertSame('(tn.field_name<1234)', $lt_cond->define());
+        $this->assertSame('(tn.field_name<1234)', $lt_cond->refer());
+
+        $lte_cond = $b->lte($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LteExpression', $lte_cond);
+        $this->assertSame('(tn.field_name<=1234)', $lte_cond->define());
+        $this->assertSame('(tn.field_name<=1234)', $lte_cond->refer());
 
         $now_func = $b->now($field, $int_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\NowFunction', $now_func);
@@ -196,10 +226,25 @@ class QueryTest extends TestCase
         $this->assertSame('(`table_name`.`field_name`=\'my string\')', $eq_cond->define());
         $this->assertSame('(`table_name`.`field_name`=\'my string\')', $eq_cond->refer());
 
+        $gt_cond = $b->gt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\GtExpression', $gt_cond);
+        $this->assertSame('(`table_name`.`field_name`>1234)', $gt_cond->define());
+        $this->assertSame('(`table_name`.`field_name`>1234)', $gt_cond->refer());
+
         $gte_cond = $b->gte($field, $int_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\GteExpression', $gte_cond);
         $this->assertSame('(`table_name`.`field_name`>=1234)', $gte_cond->define());
         $this->assertSame('(`table_name`.`field_name`>=1234)', $gte_cond->refer());
+
+        $lt_cond = $b->lt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LtExpression', $lt_cond);
+        $this->assertSame('(`table_name`.`field_name`<1234)', $lt_cond->define());
+        $this->assertSame('(`table_name`.`field_name`<1234)', $lt_cond->refer());
+
+        $lte_cond = $b->lte($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LteExpression', $lte_cond);
+        $this->assertSame('(`table_name`.`field_name`<=1234)', $lte_cond->define());
+        $this->assertSame('(`table_name`.`field_name`<=1234)', $lte_cond->refer());
 
         $now_func = $b->now($field, $int_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\NowFunction', $now_func);
@@ -272,10 +317,25 @@ class QueryTest extends TestCase
         $this->assertSame('(`tn`.`field_name`=\'my string\')', $eq_cond->define());
         $this->assertSame('(`tn`.`field_name`=\'my string\')', $eq_cond->refer());
 
+        $gt_cond = $b->gt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\GtExpression', $gt_cond);
+        $this->assertSame('(`tn`.`field_name`>1234)', $gt_cond->define());
+        $this->assertSame('(`tn`.`field_name`>1234)', $gt_cond->refer());
+
         $gte_cond = $b->gte($field, $int_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\GteExpression', $gte_cond);
         $this->assertSame('(`tn`.`field_name`>=1234)', $gte_cond->define());
         $this->assertSame('(`tn`.`field_name`>=1234)', $gte_cond->refer());
+
+        $lt_cond = $b->lt($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LtExpression', $lt_cond);
+        $this->assertSame('(`tn`.`field_name`<1234)', $lt_cond->define());
+        $this->assertSame('(`tn`.`field_name`<1234)', $lt_cond->refer());
+
+        $lte_cond = $b->lte($field, $int_value);
+        $this->assertInstanceOf('Phrity\Pdo\Query\LteExpression', $lte_cond);
+        $this->assertSame('(`tn`.`field_name`<=1234)', $lte_cond->define());
+        $this->assertSame('(`tn`.`field_name`<=1234)', $lte_cond->refer());
 
         $now_func = $b->now($field, $int_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\NowFunction', $now_func);

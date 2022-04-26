@@ -94,6 +94,11 @@ class Builder
         return new Update($this, $table, ...$assign);
     }
 
+    public function insert(Table $table = null, Assign ...$assign): Insert
+    {
+        return new Insert($this, $table, ...$assign);
+    }
+
     public function innerJoin(Table $join): InnerJoin
     {
         return new InnerJoin($this, $join);
@@ -117,14 +122,34 @@ class Builder
         return new AndExpression($this, ...$contitions);
     }
 
+    public function or(ExpressionInterface ...$contitions): OrExpression
+    {
+        return new OrExpression($this, ...$contitions);
+    }
+
     public function eq(ExpressionInterface $left, ExpressionInterface $right): EqExpression
     {
         return new EqExpression($this, $left, $right);
     }
 
+    public function gt(ExpressionInterface $left, ExpressionInterface $right): GtExpression
+    {
+        return new GtExpression($this, $left, $right);
+    }
+
     public function gte(ExpressionInterface $left, ExpressionInterface $right): GteExpression
     {
         return new GteExpression($this, $left, $right);
+    }
+
+    public function lt(ExpressionInterface $left, ExpressionInterface $right): LtExpression
+    {
+        return new LtExpression($this, $left, $right);
+    }
+
+    public function lte(ExpressionInterface $left, ExpressionInterface $right): LteExpression
+    {
+        return new LteExpression($this, $left, $right);
     }
 
 

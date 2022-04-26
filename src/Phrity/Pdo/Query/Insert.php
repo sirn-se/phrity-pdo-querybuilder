@@ -2,7 +2,7 @@
 
 namespace Phrity\Pdo\Query;
 
-class Update implements StatementInterface
+class Insert implements StatementInterface
 {
     private $b;
     private $into;
@@ -45,10 +45,13 @@ class Update implements StatementInterface
     public function sql(): string
     {
         $into = $this->into ? "{$this->into->define()}" : '';
-        $assign = $this->assign ? ' SET ' . implode(',', array_map(function ($assign) {
-            return $assign->define();
-        }, $this->assign)) : '';
+        $targets = $this->assign ? ' (' . implode(',', array_map(function ($assign) {
+            return $assign->target();
+        }, $this->assign)) . ')' : '';
+        $sources = $this->assign ? ' VALUES (' . implode(',', array_map(function ($assign) {
+            return $assign->source();
+        }, $this->assign)) . ')' : '';
         $where = $this->where ? " WHERE {$this->where->define()}" : '';
-        return "UPDATE {$into}{$assign}{$where};";
+        return "INSERT INTO {$into}{$targets}{$sources}{$where};";
     }
 }

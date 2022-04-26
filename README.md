@@ -75,6 +75,44 @@ echo $select->sql();
 SELECT table_name.field_name,join_table_name.join_field_name FROM table_name INNER JOIN join_table_name ON (join_table_name.join_field_name=table_name.field_name);
 ```
 
+## Insert
+
+### Basic operation
+
+Use the builder and/or convenicance methods to define Insert query.
+
+```php
+$builder = new Builder($pdo);
+$insert = $builder->insert(
+  $table = $builder->table('table_name'),
+  $builder->assign($table->field('field_name'), $builder->value('my string')),
+);
+echo $update->sql();
+```
+```
+INSERT INTO table_name (table_name.field_name) VALUES ('my string');
+```
+
+### Where conditions
+
+Adding conditions to Where clause.
+
+```php
+$builder = new Builder($pdo);
+$insert = $builder->insert(
+  $table = $builder->table('table_name'),
+  $builder->assign($table->field('field_name'), $builder->value('my new string')),
+);
+$insert->where($builder->and(
+  $builder->eq($table->field('field_name'), $builder->value('my string')),
+  $builder->gte($table->field('field_name_2'), $builder->value(1234))
+));
+echo $update->sql();
+```
+```
+INSERT INTO table_name (table_name.field_name) VALUES ('my string') WHERE ((table_name.field_name='my string') AND (table_name.field_name_2>=1234));
+```
+
 ## Update
 
 ### Basic operation
@@ -125,6 +163,7 @@ $builder->value($value, string $alias = null): Value
 
 // Query statement components
 $builder->select(Table $table = null, ExpressionInterface ...$select): Select
+$builder->insert(Table $table = null, Assign ...$assign): Insert
 $builder->update(Table $table = null, Assign ...$assign): Update
 
 // Join & Assign expressions
@@ -134,8 +173,12 @@ $builder->assign(ExpressionInterface $target, ExpressionInterface $source): Assi
 
 // Conditional expressions
 $builder->and(ExpressionInterface ...$contitions): AndExpression
+$builder->or(ExpressionInterface ...$contitions): OrExpression
 $builder->eq(ExpressionInterface $left, ExpressionInterface $right): EqExpression
+$builder->gt(ExpressionInterface $left, ExpressionInterface $right): GtExpression
 $builder->gte(ExpressionInterface $left, ExpressionInterface $right): GteExpression
+$builder->lt(ExpressionInterface $left, ExpressionInterface $right): LtExpression
+$builder->lte(ExpressionInterface $left, ExpressionInterface $right): LteExpression
 
 // Function expressions
 $builder->now(): NowFunction
