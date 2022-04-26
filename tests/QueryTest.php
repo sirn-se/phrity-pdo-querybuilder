@@ -29,6 +29,11 @@ class QueryTest extends TestCase
         $this->assertSame('table_name.field_name', $field->define());
         $this->assertSame('table_name.field_name', $field->refer());
 
+        $field = $b->field($table, 'field_name');
+        $this->assertInstanceOf('Phrity\Pdo\Query\Field', $field);
+        $this->assertSame('table_name.field_name', $field->define());
+        $this->assertSame('table_name.field_name', $field->refer());
+
         $str_value = $b->value('my string');
         $this->assertInstanceOf('Phrity\Pdo\Query\Value', $str_value);
         $this->assertSame('\'my string\'', $str_value->define());
@@ -85,6 +90,17 @@ class QueryTest extends TestCase
             $and_expr->refer()
         );
 
+        $or_expr = $b->or($eq_cond, $gte_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\OrExpression', $or_expr);
+        $this->assertSame(
+            '((table_name.field_name=\'my string\') OR (table_name.field_name>=1234))',
+            $or_expr->define()
+        );
+        $this->assertSame(
+            '((table_name.field_name=\'my string\') OR (table_name.field_name>=1234))',
+            $or_expr->refer()
+        );
+
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('table_name.field_name=\'my string\'', $assign->define());
@@ -96,6 +112,10 @@ class QueryTest extends TestCase
         $desc = $b->desc($eq_cond);
         $this->assertInstanceOf('Phrity\Pdo\Query\DescSort', $desc);
         $this->assertSame('(table_name.field_name=\'my string\') DESC', $desc->define());
+
+        $limit = $b->limit();
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('', $limit->define());
 
         $limit = $b->limit(10);
         $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
@@ -116,6 +136,11 @@ class QueryTest extends TestCase
         $this->assertSame('tn', $table->refer());
 
         $field = $table->field('field_name', 'fn');
+        $this->assertInstanceOf('Phrity\Pdo\Query\Field', $field);
+        $this->assertSame('tn.field_name fn', $field->define());
+        $this->assertSame('tn.field_name', $field->refer());
+
+        $field = $b->field($table, 'field_name', 'fn');
         $this->assertInstanceOf('Phrity\Pdo\Query\Field', $field);
         $this->assertSame('tn.field_name fn', $field->define());
         $this->assertSame('tn.field_name', $field->refer());
@@ -176,6 +201,17 @@ class QueryTest extends TestCase
             $and_expr->refer()
         );
 
+        $or_expr = $b->or($eq_cond, $gte_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\OrExpression', $or_expr);
+        $this->assertSame(
+            '((tn.field_name=\'my string\') OR (tn.field_name>=1234))',
+            $or_expr->define()
+        );
+        $this->assertSame(
+            '((tn.field_name=\'my string\') OR (tn.field_name>=1234))',
+            $or_expr->refer()
+        );
+
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('tn.field_name=\'my string\'', $assign->define());
@@ -187,6 +223,10 @@ class QueryTest extends TestCase
         $desc = $b->desc($eq_cond);
         $this->assertInstanceOf('Phrity\Pdo\Query\DescSort', $desc);
         $this->assertSame('(tn.field_name=\'my string\') DESC', $desc->define());
+
+        $limit = $b->limit(10);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 10', $limit->define());
 
         $limit = $b->limit(10);
         $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
@@ -207,6 +247,11 @@ class QueryTest extends TestCase
         $this->assertSame('`table_name`', $table->refer());
 
         $field = $table->field('field_name');
+        $this->assertInstanceOf('Phrity\Pdo\Query\Field', $field);
+        $this->assertSame('`table_name`.`field_name`', $field->define());
+        $this->assertSame('`table_name`.`field_name`', $field->refer());
+
+        $field = $b->field($table, 'field_name');
         $this->assertInstanceOf('Phrity\Pdo\Query\Field', $field);
         $this->assertSame('`table_name`.`field_name`', $field->define());
         $this->assertSame('`table_name`.`field_name`', $field->refer());
@@ -267,6 +312,17 @@ class QueryTest extends TestCase
             $and_expr->refer()
         );
 
+        $or_expr = $b->or($eq_cond, $gte_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\OrExpression', $or_expr);
+        $this->assertSame(
+            '((`table_name`.`field_name`=\'my string\') OR (`table_name`.`field_name`>=1234))',
+            $or_expr->define()
+        );
+        $this->assertSame(
+            '((`table_name`.`field_name`=\'my string\') OR (`table_name`.`field_name`>=1234))',
+            $or_expr->refer()
+        );
+
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('`table_name`.`field_name`=\'my string\'', $assign->define());
@@ -278,6 +334,10 @@ class QueryTest extends TestCase
         $desc = $b->desc($eq_cond);
         $this->assertInstanceOf('Phrity\Pdo\Query\DescSort', $desc);
         $this->assertSame('(`table_name`.`field_name`=\'my string\') DESC', $desc->define());
+
+        $limit = $b->limit(10);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 10', $limit->define());
 
         $limit = $b->limit(10);
         $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
@@ -298,6 +358,11 @@ class QueryTest extends TestCase
         $this->assertSame('`tn`', $table->refer());
 
         $field = $table->field('field_name', 'fn');
+        $this->assertInstanceOf('Phrity\Pdo\Query\Field', $field);
+        $this->assertSame('`tn`.`field_name` `fn`', $field->define());
+        $this->assertSame('`tn`.`field_name`', $field->refer());
+
+        $field = $b->field($table, 'field_name', 'fn');
         $this->assertInstanceOf('Phrity\Pdo\Query\Field', $field);
         $this->assertSame('`tn`.`field_name` `fn`', $field->define());
         $this->assertSame('`tn`.`field_name`', $field->refer());
@@ -358,6 +423,17 @@ class QueryTest extends TestCase
             $and_expr->refer()
         );
 
+        $or_expr = $b->or($eq_cond, $gte_cond);
+        $this->assertInstanceOf('Phrity\Pdo\Query\OrExpression', $or_expr);
+        $this->assertSame(
+            '((`tn`.`field_name`=\'my string\') OR (`tn`.`field_name`>=1234))',
+            $or_expr->define()
+        );
+        $this->assertSame(
+            '((`tn`.`field_name`=\'my string\') OR (`tn`.`field_name`>=1234))',
+            $or_expr->refer()
+        );
+
         $assign = $b->assign($field, $str_value);
         $this->assertInstanceOf('Phrity\Pdo\Query\Assign', $assign);
         $this->assertSame('`tn`.`field_name`=\'my string\'', $assign->define());
@@ -374,8 +450,25 @@ class QueryTest extends TestCase
         $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
         $this->assertSame('LIMIT 10', $limit->define());
 
+        $limit = $b->limit(10);
+        $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
+        $this->assertSame('LIMIT 10', $limit->define());
+
         $limit = $b->limit(10, 5);
         $this->assertInstanceOf('Phrity\Pdo\Query\Limit', $limit);
         $this->assertSame('LIMIT 5,10', $limit->define());
+    }
+
+    public function quoting(): void
+    {
+        $b = new Builder($this->getPdo());
+
+        $this->assertSame("'My string'", $b->q('My string'));
+        $this->assertSame(1234, $b->q(1234));
+        $this->assertSame(12.34, $b->q(12.34));
+        $this->assertSame(1, $b->q(true));
+        $this->assertSame('null', $b->q(null));
+        $this->assertSame([3], $b->q([3]));
+        $this->assertSame("`My string`", $b->escape('My string'));
     }
 }

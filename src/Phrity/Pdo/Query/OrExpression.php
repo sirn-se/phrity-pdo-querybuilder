@@ -23,7 +23,7 @@ class OrExpression implements ExpressionInterface
 
     public function refer(): string
     {
-        return '(' . implode(' PR ', array_map(function ($contition) {
+        return '(' . implode(' OR ', array_map(function ($contition) {
             return $contition->define();
         }, $this->contitions)) . ')';
     }
