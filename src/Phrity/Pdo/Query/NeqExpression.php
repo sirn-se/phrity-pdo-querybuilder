@@ -2,7 +2,7 @@
 
 namespace Phrity\Pdo\Query;
 
-class LtExpression implements ExpressionInterface
+class NeqExpression implements ExpressionInterface
 {
     private $b;
     private $left;
@@ -20,6 +20,6 @@ class LtExpression implements ExpressionInterface
 
     public function refer(bool $use_alias = false, bool $use_context = false): string
     {
-        return "({$this->left->refer($use_alias, $use_context)}<{$this->right->refer($use_alias, $use_context)})";
+        return "({$this->left->refer($use_alias, $use_context)}<>{$this->right->refer($use_alias, $use_context)})";
     }
 }

@@ -8,7 +8,7 @@ class Assign
     private $target;
     private $source;
 
-    public function __construct(Builder $b, ExpressionInterface $target, ExpressionInterface $source)
+    public function __construct(Builder $b, Field $target, ExpressionInterface $source)
     {
         $this->b = $b;
         $this->target = $target;
@@ -18,18 +18,18 @@ class Assign
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function target(): string
+    public function target(bool $use_alias = false, bool $use_context = false): string
     {
-        return "{$this->target->refer()}";
+        return $this->target->refer($use_alias, $use_context);
     }
 
-    public function source(): string
+    public function source(bool $use_alias = false, bool $use_context = false): string
     {
-        return "{$this->source->refer()}";
+        return $this->source->refer($use_alias, $use_context);
     }
 
-    public function define(): string
+    public function define(bool $use_alias = false, bool $use_context = false): string
     {
-        return "{$this->target->refer()}={$this->source->refer()}";
+        return "{$this->target->refer($use_alias, $use_context)}={$this->source->refer($use_alias, $use_context)}";
     }
 }

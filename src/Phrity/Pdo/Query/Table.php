@@ -43,19 +43,19 @@ class Table
      * Return definition
      * @return string Sql table definition
      */
-    public function define(): string
+    public function define(bool $use_alias = false): string
     {
-        return $this->alias
+        return $use_alias && $this->alias
             ? "{$this->b->e($this->name)} {$this->b->e($this->alias)}"
-            : "{$this->b->e($this->name)}";
+            : $this->b->e($this->name);
     }
 
     /**
      * Return reference
      * @return string Sql table reference
      */
-    public function refer(): string
+    public function refer(bool $use_alias = false): string
     {
-        return $this->b->e($this->alias ?: $this->name);
+        return $this->b->e($use_alias && $this->alias ? $this->alias : $this->name);
     }
 }

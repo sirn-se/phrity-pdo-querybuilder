@@ -2,32 +2,25 @@
 
 namespace Phrity\Pdo\Query;
 
-class Update implements StatementInterface
+class Delete implements StatementInterface
 {
     private $b;
     private $table;
-    private $assign = [];
     private $where;
 
-    public function __construct(Builder $b, Table $table, Assign ...$assign)
+    public function __construct(Builder $b, Table $table)
     {
         $this->b = $b;
         $this->table($table);
-        $this->assign(...$assign);
     }
 
 
     /* ---------- Builder methods ---------------------------------------------------- */
 
-    public function table(Table $table): ?Table
+    public function table(Table $table): Table
     {
         $this->table = $table;
         return $table;
-    }
-
-    public function assign(Assign ...$assign): void
-    {
-        $this->assign = $assign;
     }
 
     public function where(ExpressionInterface $where): void
@@ -40,10 +33,7 @@ class Update implements StatementInterface
 
     public function sql(): string
     {
-        $assign = $this->assign ? ' SET ' . implode(',', array_map(function ($assign) {
-            return $assign->define();
-        }, $this->assign)) : '';
         $where = $this->where ? " WHERE {$this->where->refer()}" : '';
-        return "UPDATE {$this->table->define()}{$assign}{$where};";
+        return "DELETE FROM {$this->table->refer()}{$where};";
     }
 }

@@ -5,28 +5,23 @@ namespace Phrity\Pdo\Query;
 class Insert implements StatementInterface
 {
     private $b;
-    private $into;
+    private $table;
     private $assign = [];
-    private $where;
-    private $joins = [];
-    private $for;
 
-    public function __construct(Builder $b, Table $into = null, Assign ...$assign)
+    public function __construct(Builder $b, Table $table, Assign ...$assign)
     {
         $this->b = $b;
-        $this->into($into);
+        $this->table($table);
         $this->assign(...$assign);
     }
 
 
     /* ---------- Builder methods ---------------------------------------------------- */
 
-    public function into(Table $into = null): ?Table
+    public function table(Table $table): Table
     {
-        if ($into) {
-            $this->into = $into;
-        }
-        return $into;
+        $this->table = $table;
+        return $table;
     }
 
     public function assign(Assign ...$assign): void
@@ -34,24 +29,17 @@ class Insert implements StatementInterface
         $this->assign = $assign;
     }
 
-    public function where(ExpressionInterface $where): void
-    {
-        $this->where = $where;
-    }
-
 
     /* ---------- Generator methods -------------------------------------------------- */
 
     public function sql(): string
     {
-        $into = $this->into ? "{$this->into->define()}" : '';
         $targets = $this->assign ? ' (' . implode(',', array_map(function ($assign) {
             return $assign->target();
         }, $this->assign)) . ')' : '';
         $sources = $this->assign ? ' VALUES (' . implode(',', array_map(function ($assign) {
             return $assign->source();
         }, $this->assign)) . ')' : '';
-        $where = $this->where ? " WHERE {$this->where->define()}" : '';
-        return "INSERT INTO {$into}{$targets}{$sources}{$where};";
+        return "INSERT INTO {$this->table->refer()}{$targets}{$sources};";
     }
 }

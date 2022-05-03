@@ -15,7 +15,7 @@ class InsertTest extends TestCase
         error_reporting(-1);
     }
 
-    public function testSelect(): void
+    public function testInsertUnescaped(): void
     {
         $b = new Builder($this->getPdo());
 
@@ -25,17 +25,22 @@ class InsertTest extends TestCase
             $b->assign($table->field('str_field'), $b->value('my string'))
         );
         $this->assertSame(
-            'INSERT INTO table_name (table_name.int_field,table_name.str_field) VALUES (1234,\'my string\');',
+            'INSERT INTO table_name (int_field,str_field) VALUES (1234,\'my string\');',
             $insert->sql()
         );
+    }
 
-        $insert->where($b->and(
-            $b->eq($table->field('field_name'), $b->value(123)),
-            $b->eq($table->field('another_name'), $b->now()),
-        ));
+    public function testInsertEscaped(): void
+    {
+        $b = new Builder($this->getPdo(), true);
+
+        $insert = $b->insert(
+            $table = $b->table('table_name'),
+            $b->assign($table->field('int_field'), $b->value(1234)),
+            $b->assign($table->field('str_field'), $b->value('my string'))
+        );
         $this->assertSame(
-            'INSERT INTO table_name (table_name.int_field,table_name.str_field) VALUES (1234,\'my string\') '
-            . 'WHERE ((table_name.field_name=123) AND (table_name.another_name=NOW()));',
+            'INSERT INTO `table_name` (`int_field`,`str_field`) VALUES (1234,\'my string\');',
             $insert->sql()
         );
     }

@@ -16,8 +16,8 @@ class DescSort implements ExpressionInterface
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function define(): string
+    public function define(bool $use_alias = false, bool $use_context = false): string
     {
-        return "{$this->expression->refer()} DESC";
+        return "{$this->expression->refer($use_alias, $use_context)} DESC";
     }
 }

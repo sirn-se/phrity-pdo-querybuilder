@@ -33,7 +33,7 @@ class InnerJoin
 
     public function sql(): string
     {
-        $on = $this->on ? " ON {$this->on->define()}" : '';
-        return "INNER JOIN {$this->join->define()}{$on}";
+        $on = $this->on ? " ON {$this->on->refer(true, true)}" : '';
+        return "INNER JOIN {$this->join->define(true, true)}{$on}";
     }
 }

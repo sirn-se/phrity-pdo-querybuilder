@@ -20,15 +20,17 @@ class Field implements ExpressionInterface
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function define(): string
+    public function define(bool $use_alias = false, bool $use_context = false): string
     {
-        return $this->alias
-            ? "{$this->refer()} {$this->b->e($this->alias)}"
-            : $this->refer();
+        $ref = $use_alias && $this->alias
+            ? "{$this->b->e($this->name)} {$this->b->e($this->alias)}"
+            : $this->b->e($this->name);
+        return $use_context ? "{$this->table->refer($use_alias)}.{$ref}" : $ref;
     }
 
-    public function refer(): string
+    public function refer(bool $use_alias = false, bool $use_context = false): string
     {
-        return "{$this->table->refer()}.{$this->b->e($this->name)}";
+        $ref = $use_alias && $this->alias ? $this->b->e($this->alias) : $this->b->e($this->name);
+        return $use_context ? "{$this->table->refer($use_alias)}.{$ref}" : $ref;
     }
 }

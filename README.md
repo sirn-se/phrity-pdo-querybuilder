@@ -11,7 +11,7 @@ Current version supports PHP `^7.3|^8.0`.
 
 Install with [Composer](https://getcomposer.org/);
 ```
-N/A
+composer require phrity/phrity-pdo-querybuilder
 ```
 
 ## Select
@@ -163,18 +163,21 @@ $builder->value($value, string $alias = null): Value
 
 // Query statement components
 $builder->select(Table $table = null, ExpressionInterface ...$select): Select
-$builder->insert(Table $table = null, Assign ...$assign): Insert
-$builder->update(Table $table = null, Assign ...$assign): Update
+$builder->insert(Table $table, Assign ...$assign): Insert
+$builder->update(Table $table, Assign ...$assign): Update
 
 // Join & Assign expressions
 $builder->innerJoin(Table $join): InnerJoin
 $builder->leftJoin(Table $join): LeftJoin
 $builder->assign(ExpressionInterface $target, ExpressionInterface $source): Assign
 
-// Conditional expressions
+// Conditional expression sets
 $builder->and(ExpressionInterface ...$contitions): AndExpression
 $builder->or(ExpressionInterface ...$contitions): OrExpression
+
+// Conditional expressions
 $builder->eq(ExpressionInterface $left, ExpressionInterface $right): EqExpression
+$builder->neq(ExpressionInterface $left, ExpressionInterface $right): NeqExpression
 $builder->gt(ExpressionInterface $left, ExpressionInterface $right): GtExpression
 $builder->gte(ExpressionInterface $left, ExpressionInterface $right): GteExpression
 $builder->lt(ExpressionInterface $left, ExpressionInterface $right): LtExpression

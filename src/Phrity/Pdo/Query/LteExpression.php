@@ -18,13 +18,8 @@ class LteExpression implements ExpressionInterface
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function define(): string
+    public function refer(bool $use_alias = false, bool $use_context = false): string
     {
-        return $this->refer();
-    }
-
-    public function refer(): string
-    {
-        return "({$this->left->refer()}<={$this->right->refer()})";
+        return "({$this->left->refer($use_alias, $use_context)}<={$this->right->refer($use_alias, $use_context)})";
     }
 }

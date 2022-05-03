@@ -18,15 +18,15 @@ class Value implements ExpressionInterface
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function define(): string
+    public function define(bool $use_alias = false): string
     {
-        return $this->alias
-            ? "{$this->refer()} {$this->b->e($this->alias)}"
-            : $this->refer();
+        return $use_alias && $this->alias
+            ? "{$this->b->q($this->value)} {$this->b->e($this->alias)}"
+            : $this->b->q($this->value);
     }
 
-    public function refer(): string
+    public function refer(bool $use_alias = false): string
     {
-        return $this->b->q($this->value);
+        return $use_alias && $this->alias ? $this->b->e($this->alias) : $this->b->q($this->value);
     }
 }

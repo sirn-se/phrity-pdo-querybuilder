@@ -5,7 +5,7 @@ namespace Phrity\Pdo\Query;
 class Select implements StatementInterface
 {
     private $b;
-    private $from;
+    private $table;
     private $select = [];
     private $where;
     private $joins = [];
@@ -13,22 +13,20 @@ class Select implements StatementInterface
     private $for;
     private $limit;
 
-    public function __construct(Builder $b, Table $from = null, ExpressionInterface ...$select)
+    public function __construct(Builder $b, Table $table = null, ExpressionInterface ...$select)
     {
         $this->b = $b;
-        $this->from($from);
+        $this->table($table);
         $this->select(...$select);
     }
 
 
     /* ---------- Builder methods ---------------------------------------------------- */
 
-    public function from(Table $from = null): ?Table
+    public function table(Table $table = null): ?Table
     {
-        if ($from) {
-            $this->from = $from;
-        }
-        return $from;
+        $this->table = $table;
+        return $table;
     }
 
     public function select(ExpressionInterface ...$select): void
@@ -75,19 +73,19 @@ class Select implements StatementInterface
 
     public function sql(): string
     {
-        $from = $this->from ? " FROM {$this->from->define()}" : '';
+        $table = $this->table ? " FROM {$this->table->define(true)}" : '';
         $fields = $this->select ? implode(',', array_map(function ($select) {
-            return $select->define();
+            return $select->define(true, (bool)$this->joins);
         }, $this->select)) : '*';
         $joins = $this->joins ? ' ' . implode(' ', array_map(function ($join) {
             return $join->sql();
         }, $this->joins)) : '';
-        $where = $this->where ? " WHERE {$this->where->define()}" : '';
+        $where = $this->where ? " WHERE {$this->where->refer(true, (bool)$this->joins)}" : '';
         $order_by = $this->order_by ? ' ORDER BY ' . implode(',', array_map(function ($order_by) {
-            return $order_by->define();
+            return $order_by->define(true, (bool)$this->joins);
         }, $this->order_by)) : '';
         $limit = $this->limit ? " {$this->limit->define()}" : '';
         $for = $this->for ? " FOR {$this->for}" : '';
-        return "SELECT {$fields}{$from}{$joins}{$where}{$order_by}{$limit}{$for};";
+        return "SELECT {$fields}{$table}{$joins}{$where}{$order_by}{$limit}{$for};";
     }
 }

@@ -14,11 +14,6 @@ class NowFunction implements ExpressionInterface
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function define(): string
-    {
-        return $this->refer();
-    }
-
     public function refer(): string
     {
         return 'NOW()';

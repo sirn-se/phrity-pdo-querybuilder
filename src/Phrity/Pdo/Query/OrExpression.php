@@ -16,15 +16,10 @@ class OrExpression implements ExpressionInterface
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function define(): string
+    public function refer(bool $use_alias = false, bool $use_context = false): string
     {
-        return $this->refer();
-    }
-
-    public function refer(): string
-    {
-        return '(' . implode(' OR ', array_map(function ($contition) {
-            return $contition->define();
+        return '(' . implode(' OR ', array_map(function ($contition) use ($use_alias, $use_context) {
+            return $contition->refer($use_alias, $use_context);
         }, $this->contitions)) . ')';
     }
 }

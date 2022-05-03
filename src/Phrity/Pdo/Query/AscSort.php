@@ -16,8 +16,8 @@ class AscSort implements ExpressionInterface
 
     /* ---------- Generator methods -------------------------------------------------- */
 
-    public function define(): string
+    public function define(bool $use_alias = false, bool $use_context = false): string
     {
-        return "{$this->expression->refer()} ASC";
+        return "{$this->expression->refer($use_alias, $use_context)} ASC";
     }
 }

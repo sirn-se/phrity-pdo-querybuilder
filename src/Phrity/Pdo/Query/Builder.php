@@ -94,9 +94,14 @@ class Builder
         return new Update($this, $table, ...$assign);
     }
 
-    public function insert(Table $table = null, Assign ...$assign): Insert
+    public function insert(Table $table, Assign ...$assign): Insert
     {
         return new Insert($this, $table, ...$assign);
+    }
+
+    public function delete(Table $table): Delete
+    {
+        return new Delete($this, $table);
     }
 
     public function innerJoin(Table $join): InnerJoin
@@ -109,7 +114,7 @@ class Builder
         return new LeftJoin($this, $join);
     }
 
-    public function assign(ExpressionInterface $target, ExpressionInterface $source): Assign
+    public function assign(Field $target, ExpressionInterface $source): Assign
     {
         return new Assign($this, $target, $source);
     }
@@ -130,6 +135,11 @@ class Builder
     public function eq(ExpressionInterface $left, ExpressionInterface $right): EqExpression
     {
         return new EqExpression($this, $left, $right);
+    }
+
+    public function neq(ExpressionInterface $left, ExpressionInterface $right): NeqExpression
+    {
+        return new NeqExpression($this, $left, $right);
     }
 
     public function gt(ExpressionInterface $left, ExpressionInterface $right): GtExpression
