@@ -19,20 +19,22 @@ class Update implements StatementInterface
 
     /* ---------- Builder methods ---------------------------------------------------- */
 
-    public function table(Table $table): ?Table
+    public function table(Table $table): Table
     {
         $this->table = $table;
         return $table;
     }
 
-    public function assign(Assign ...$assign): void
+    public function assign(Assign ...$assign): self
     {
         $this->assign = $assign;
+        return $this;
     }
 
-    public function where(ExpressionInterface $where): void
+    public function where(ExpressionInterface $where): self
     {
         $this->where = $where;
+        return $this;
     }
 
 

@@ -29,14 +29,16 @@ class Select implements StatementInterface
         return $table;
     }
 
-    public function select(ExpressionInterface ...$select): void
+    public function select(ExpressionInterface ...$select): self
     {
         $this->select = $select;
+        return $this;
     }
 
-    public function where(ExpressionInterface $where): void
+    public function where(ExpressionInterface $where): self
     {
         $this->where = $where;
+        return $this;
     }
 
     public function innerJoin(Table $join): InnerJoin
@@ -53,19 +55,22 @@ class Select implements StatementInterface
         return $join;
     }
 
-    public function orderBy(ExpressionInterface ...$order_by): void
+    public function orderBy(ExpressionInterface ...$order_by): self
     {
         $this->order_by = $order_by;
+        return $this;
     }
 
-    public function limit(int $limit = null, int $offset = null): void
+    public function limit(int $limit = null, int $offset = null): self
     {
         $this->limit = $this->b->limit($limit, $offset);
+        return $this;
     }
 
-    public function forUpdate(): void
+    public function forUpdate(): self
     {
         $this->for = 'UPDATE';
+        return $this;
     }
 
 

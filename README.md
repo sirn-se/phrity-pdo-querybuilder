@@ -11,7 +11,7 @@ Current version supports PHP `^7.3|^8.0`.
 
 Install with [Composer](https://getcomposer.org/);
 ```
-composer require phrity/phrity-pdo-querybuilder
+composer require phrity/pdo-querybuilder
 ```
 
 ## Select
@@ -153,9 +153,11 @@ UPDATE table_name SET table_name.field_name='my new string' WHERE ((table_name.f
 
 ## Build compontens
 
-Methods on Builder.
+### Methods on Builder
 
 ```php
+$builder = Builder::__construct(PDO $pdo, bool $escape = false)
+
 // Core components
 $builder->table(string $name, string $alias = null): Table
 $builder->field(Table $table, string $name, string $alias = null): Field
@@ -182,6 +184,7 @@ $builder->gt(ExpressionInterface $left, ExpressionInterface $right): GtExpressio
 $builder->gte(ExpressionInterface $left, ExpressionInterface $right): GteExpression
 $builder->lt(ExpressionInterface $left, ExpressionInterface $right): LtExpression
 $builder->lte(ExpressionInterface $left, ExpressionInterface $right): LteExpression
+$builder->isNull(ExpressionInterface $left): IsNullExpression
 
 // Function expressions
 $builder->now(): NowFunction
@@ -191,4 +194,55 @@ $builder->curDate(): CurDateFunction
 $builder->asc(ExpressionInterface $expression): AscSort
 $builder->desc(ExpressionInterface $expression): DescSort
 $builder->limit(int $limit = null, int $offset = null): Limit
+```
+
+### Methods on Table
+
+```php
+$table = Table::__construct(Builder $b, string $name, string $alias = null)
+
+$table->field(string $name, string $alias = null): Field
+```
+
+### Methods on Select
+
+```php
+$select = Select::__construct(Builder $b, Table $table = null, ExpressionInterface ...$select)
+
+$select->table(Table $table = null): ?Table
+$select->select(ExpressionInterface ...$select): self
+$select->where(ExpressionInterface $where): self
+$select->innerJoin(Table $join): InnerJoin
+$select->leftJoin(Table $join): LeftJoin
+$select->orderBy(ExpressionInterface ...$order_by): self
+$select->limit(int $limit = null, int $offset = null): self
+$select->forUpdate(): self
+```
+
+### Methods on Insert
+
+```php
+$insert = Insert::__construct(Builder $b, Table $table, Assign ...$assign)
+
+$insert->table(Table $table): Table
+$insert->assign(Assign ...$assign): self
+```
+
+### Methods on Update
+
+```php
+$update = Update::__construct(Builder $b, Table $table, Assign ...$assign)
+
+$update->table(Table $table): Table
+$update->assign(Assign ...$assign): self
+$update->where(ExpressionInterface $where): self
+```
+
+### Methods on Delete
+
+```php
+$delete = Delete::__construct(Builder $b, Table $table)
+
+$delete->table(Table $table): Table
+$delete->where(ExpressionInterface $where): self
 ```

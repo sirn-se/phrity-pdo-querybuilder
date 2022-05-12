@@ -333,6 +333,13 @@ class QueryTest extends TestCase
         $this->assertSame('(table_name.field_name<=1234)', $lte->refer(false, true));
         $this->assertSame('(fn<=1234)', $lte->refer(true, false));
         $this->assertSame('(tn.fn<=1234)', $lte->refer(true, true));
+
+        $in = $b->isNull($field);
+        $this->assertInstanceOf('Phrity\Pdo\Query\IsNullExpression', $in);
+        $this->assertSame('(field_name IS NULL)', $in->refer(false, false));
+        $this->assertSame('(table_name.field_name IS NULL)', $in->refer(false, true));
+        $this->assertSame('(fn IS NULL)', $in->refer(true, false));
+        $this->assertSame('(tn.fn IS NULL)', $in->refer(true, true));
     }
 
     public function testConditionsEscaped(): void
@@ -383,6 +390,13 @@ class QueryTest extends TestCase
         $this->assertSame('(`table_name`.`field_name`<=1234)', $lte->refer(false, true));
         $this->assertSame('(`fn`<=1234)', $lte->refer(true, false));
         $this->assertSame('(`tn`.`fn`<=1234)', $lte->refer(true, true));
+
+        $in = $b->isNull($field);
+        $this->assertInstanceOf('Phrity\Pdo\Query\IsNullExpression', $in);
+        $this->assertSame('(`field_name` IS NULL)', $in->refer(false, false));
+        $this->assertSame('(`table_name`.`field_name` IS NULL)', $in->refer(false, true));
+        $this->assertSame('(`fn` IS NULL)', $in->refer(true, false));
+        $this->assertSame('(`tn`.`fn` IS NULL)', $in->refer(true, true));
     }
 
     public function testFunctionsUnescaped(): void

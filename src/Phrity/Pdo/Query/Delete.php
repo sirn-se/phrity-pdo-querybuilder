@@ -23,9 +23,10 @@ class Delete implements StatementInterface
         return $table;
     }
 
-    public function where(ExpressionInterface $where): void
+    public function where(ExpressionInterface $where): self
     {
         $this->where = $where;
+        return $this;
     }
 
 

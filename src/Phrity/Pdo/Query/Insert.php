@@ -24,9 +24,10 @@ class Insert implements StatementInterface
         return $table;
     }
 
-    public function assign(Assign ...$assign): void
+    public function assign(Assign ...$assign): self
     {
         $this->assign = $assign;
+        return $this;
     }
 
 

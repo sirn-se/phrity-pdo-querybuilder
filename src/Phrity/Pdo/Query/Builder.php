@@ -120,7 +120,7 @@ class Builder
     }
 
 
-    /* ---------- Condition methods -------------------------------------------------- */
+    /* ---------- Condition set methods ---------------------------------------------- */
 
     public function and(ExpressionInterface ...$contitions): AndExpression
     {
@@ -131,6 +131,9 @@ class Builder
     {
         return new OrExpression($this, ...$contitions);
     }
+
+
+    /* ---------- Condition methods -------------------------------------------------- */
 
     public function eq(ExpressionInterface $left, ExpressionInterface $right): EqExpression
     {
@@ -160,6 +163,11 @@ class Builder
     public function lte(ExpressionInterface $left, ExpressionInterface $right): LteExpression
     {
         return new LteExpression($this, $left, $right);
+    }
+
+    public function isNull(ExpressionInterface $left): IsNullExpression
+    {
+        return new IsNullExpression($this, $left);
     }
 
 
